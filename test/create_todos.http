@@ -1,0 +1,18 @@
+@baseUrl = http://localhost:8081
+
+### Get Auth Token
+# @name auth
+GET {{baseUrl}}/tokenz
+
+###
+
+@token = {{auth.response.body.$.token}}
+
+### Create Todo
+POST {{baseUrl}}/todos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "text": "Test 5"
+}
