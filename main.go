@@ -12,11 +12,12 @@ import (
 
 	"github.com/GibGyb/todo-project/auth"
 	"github.com/GibGyb/todo-project/todo"
+	"github.com/gin-contrib/cors"
 	"github.com/joho/godotenv"
 	"golang.org/x/time/rate"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/sqlite"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -38,7 +39,7 @@ func main() {
 		log.Println("please consider environment variables: %s", err)
 	}
 
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(os.Getenv("DB_CONN")), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -46,6 +47,16 @@ func main() {
 	db.AutoMigrate(&todo.Todo{})
 
 	router := gin.Default()
+	// Allow Cors
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:8080"}
+	config.AllowHeaders = []string{
+		"Origin", 
+		"Authorization",
+		"Transaction-Id",
+	}
+	router.Use(cors.New(config))
+	
 	router.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{"message": "pong"})
 	})
@@ -72,6 +83,8 @@ func main() {
 
 	handler := todo.NewHandler(db)
 	protected.POST("/todos", handler.NewTask)
+	protected.GET("/todos", handler.List)
+	protected.DELETE("/todos/:id", handler.Remove)
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
@@ -113,4 +126,4 @@ func limitHandler(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{"message": "pong"})
-	}
+	} 
