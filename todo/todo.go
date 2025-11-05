@@ -22,9 +22,11 @@ func NewHandler(db *gorm.DB) *TodoHandler {
 	return &TodoHandler{db: db}
 }
 
+
+// Define the table name for the Todo model
 func (Todo) TableName() string {
 	return "todos"
-} // กำหนดชื่อ table ใน database ด้วยตัวเอง
+} 
 
 func (t *TodoHandler) NewTask(c *gin.Context) {
 
