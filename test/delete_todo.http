@@ -1,3 +1,4 @@
+
 @baseUrl = http://localhost:8081
 
 ### Get Auth Token
@@ -8,11 +9,7 @@ GET {{baseUrl}}/tokenz
 
 @token = {{auth.response.body.$.token}}
 
-### Create Todo
-POST {{baseUrl}}/todos
+### Delete Todo
+DELETE {{baseUrl}}/todos/4
 Content-Type: application/json
 Authorization: Bearer {{token}}
-
-{
-    "text": "Test 6"
-}

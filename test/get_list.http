@@ -8,11 +8,8 @@ GET {{baseUrl}}/tokenz
 
 @token = {{auth.response.body.$.token}}
 
-### Create Todo
-POST {{baseUrl}}/todos
+### Get List
+GET {{baseUrl}}/todos
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
-{
-    "text": "Test 6"
-}
